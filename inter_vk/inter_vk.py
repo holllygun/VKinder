@@ -19,4 +19,8 @@ class VK:
        params.update({"owner_id":self.id, "album_id": "profile","photo_sizes":"0","extended":"1"})
        response =requests.get('https://api.vk.com/method/photos.get', params=params)
        return response.json()
-   
+   def get_info_user(self,fields:str):
+       params = self.common_params()
+       params.update({"user_id":self.id, "fields":fields})
+       response =requests.get('https://api.vk.com/method/users.get', params=params)
+       return response.json()
