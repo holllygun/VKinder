@@ -1,5 +1,4 @@
 import vk_api
-from pprint import pprint
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
@@ -15,10 +14,12 @@ def user_name(user_id):  # достать имя пользователя
 
 def standart_keyboard():
     keyboard = VkKeyboard(one_time=True)
-    buttons = ['Дальше', 'Добавить', 'Закончить', 'Избранное']
-    buttons_colors = [VkKeyboardColor.SECONDARY, VkKeyboardColor.POSITIVE, VkKeyboardColor.NEGATIVE, VkKeyboardColor.SECONDARY]
+    buttons = ['Дальше', 'Добавить', 'Закончить']
+    buttons_colors = [VkKeyboardColor.SECONDARY, VkKeyboardColor.POSITIVE, VkKeyboardColor.NEGATIVE]
     for btn, btn_color in zip(buttons, buttons_colors):
         keyboard.add_button(btn, btn_color)
+    keyboard.add_line()
+    keyboard.add_button('Избранное', color=VkKeyboardColor.SECONDARY)
     return keyboard.get_keyboard()
 
 
