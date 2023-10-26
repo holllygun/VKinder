@@ -2,6 +2,7 @@ import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
+
 def sender(id, text, **kwargs):  # функция для отправки сообщений
     vk.messages.send(user_id=id, message=text, random_id=0, **kwargs)
 
@@ -23,14 +24,13 @@ def standart_keyboard():
     return keyboard.get_keyboard()
 
 
+
 def longpoll_event():  # отправить ответ и создать клавиатуру
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW:
             if event.to_me:
-                msg = event.text.lower()
                 id = event.user_id
-                # user_city = get_user_info(id)
-                # # user_city = user_city['response'][0]['city'][0]
+                msg = event.text.lower()
                 if msg == 'привет' or msg == 'начать':
                     keyboard = VkKeyboard(one_time=True)
                     buttons = ['Да!', 'Я передумал']
@@ -38,19 +38,14 @@ def longpoll_event():  # отправить ответ и создать кла�
                     for btn, btn_color in zip(buttons, buttons_colors):
                         keyboard.add_button(btn, btn_color)
                     sender(id, f'Привет, {user_name(id)}! Начнем?', keyboard=keyboard.get_keyboard())
-
                 elif msg == 'да!' or msg == 'вернуться':
                     sender(id, f'Выберите действие', keyboard=standart_keyboard())
-
                 elif msg == 'дальше':
                     sender(id, f'Едем дальше', keyboard=standart_keyboard())
-
                 elif msg == 'добавить':
                     sender(id, f'Добавили в избранное', keyboard=standart_keyboard())
-
                 elif msg == 'закончить' or msg == 'я передумал':
                     sender(id, 'Пока:(')
-
                 elif msg == 'избранное':
                     keyboard = VkKeyboard(one_time=True)
                     buttons = ['Вернуться', 'Закончить']
