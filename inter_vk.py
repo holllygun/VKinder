@@ -57,34 +57,40 @@ class VK:
 
     def get_matches(self): # выбрать пользователей по параметрам
         user = self.get_info_user()
-        city = user['response'][0]['city']['id']
-        sex = user['response'][0]['sex']
-        if sex == 1:
-            new_sex = 2
-        else:
-            new_sex = 1
-        age = self.calculate_age(user['response'][0]['bdate'])
-        people = self.search_people(city, age, new_sex)
+        try:
+            city = user['response'][0]['city']['id']
+            sex = user['response'][0]['sex']
+            if sex == 1:
+                new_sex = 2
+            else:
+                new_sex = 1
+            age = self.calculate_age(user['response'][0]['bdate'])
+            people = self.search_people(city, age, new_sex)
+        except KeyError:
+            return 'Недостаточно информации для поиска. Пожалуйста, добавьте в личные данные ваш возраст и/или город.'
         return people
 
     def users_list(self): # список фамилий,имен, ссылок пользователей + 3 фотографии
-        matches_file = self.get_matches()
-        matches_file = matches_file['response']['items']
-        final_file = []
-        for item in matches_file:
-            try:
-                id = item['id']
-                users_photos = self.get_profile_photo(id)
-                item.update(dict(photos=users_photos))
-            except KeyError:
-                item.update(dict(photos='Нет фотографий:('))
-        for match in matches_file:
-            if match['photos'] != 'Нет фотографий:(':
-                photos = '\n'.join(match['photos'])
-            else:
-                photos = match['photos']
-            link = match['domain']
-            full_name = match['first_name'] + ' ' + match['last_name']
-            final_file.append([full_name, link, photos])
-        return final_file
+        try:
+            matches_file = self.get_matches()
+            matches_file = matches_file['response']['items']
+            final_file = []
+            for item in matches_file:
+                try:
+                    id = item['id']
+                    users_photos = self.get_profile_photo(id)
+                    item.update(dict(photos=users_photos))
+                except KeyError:
+                    item.update(dict(photos='Нет фотографий:('))
+            for match in matches_file:
+                if match['photos'] != 'Нет фотографий:(':
+                    photos = '\n'.join(match['photos'])
+                else:
+                    photos = match['photos']
+                link = match['domain']
+                full_name = match['first_name'] + ' ' + match['last_name']
+                final_file.append([full_name, link, photos])
+            return final_file
+        except TypeError:
+            return self.get_matches()
 

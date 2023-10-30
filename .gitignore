@@ -2,3 +2,4 @@ venv/
 .idea/
 group_token.txt
 token
+__pycache__/
